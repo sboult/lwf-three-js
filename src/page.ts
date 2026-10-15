@@ -1,9 +1,8 @@
 export function renderPage(): string {
-  const depthLayers = Array.from(
-    { length: 14 },
-    (_, index) =>
-      `<div class="tile depth" style="--depth:${index + 1}" aria-hidden="true"></div>`,
-  ).join("");
+  const lambdaMark = `
+    <svg class="mark" viewBox="0 0 1000 1000" aria-hidden="true">
+      <path d="M250 205 H520 L760 695 H845 V810 H665 L405 325 H250 Z M405 810 H205 L405 410 L515 620 Z"/>
+    </svg>`;
 
   return `<!doctype html>
 <html lang="en">
@@ -40,6 +39,7 @@ export function renderPage(): string {
       }
 
       .spinner {
+        --thickness: 34px;
         position: relative;
         width: 76%;
         aspect-ratio: 1;
@@ -54,16 +54,14 @@ export function renderPage(): string {
         backface-visibility: hidden;
       }
 
-      .depth {
-        background: linear-gradient(135deg, #a53b00, #692200);
-        transform: translateZ(calc(var(--depth) * -2px));
-        box-shadow: inset -5px -4px 8px rgb(45 12 0 / 28%);
-      }
-
-      .face {
+      .front,
+      .back {
         display: grid;
         place-items: center;
         overflow: hidden;
+      }
+
+      .front {
         background:
           linear-gradient(145deg, rgb(255 255 255 / 18%), transparent 28%),
           linear-gradient(145deg, #f48416 0%, #db5f08 58%, #bb4300 100%);
@@ -73,16 +71,77 @@ export function renderPage(): string {
           inset -12px -14px 22px rgb(100 27 0 / 22%),
           0 28px 48px rgb(0 0 0 / 38%),
           0 12px 38px rgb(255 111 0 / 22%);
-        transform: translateZ(2px);
+        transform: translateZ(calc(var(--thickness) / 2));
       }
 
-      .face::after {
+      .front::after {
         content: "";
         position: absolute;
         inset: 0;
         background: linear-gradient(115deg, transparent 32%, rgb(255 255 255 / 16%) 47%, transparent 61%);
         transform: translateX(-110%);
         animation: glint 5.5s ease-in-out infinite;
+      }
+
+      .back {
+        background:
+          linear-gradient(145deg, rgb(255 255 255 / 8%), transparent 32%),
+          linear-gradient(145deg, #c84b00, #8e2d00);
+        border: 1px solid rgb(255 166 92 / 34%);
+        box-shadow: inset 10px 12px 24px rgb(66 17 0 / 30%);
+        transform: rotateY(180deg) translateZ(calc(var(--thickness) / 2));
+      }
+
+      .back .mark {
+        opacity: .68;
+        filter: drop-shadow(0 5px 3px rgb(46 10 0 / 35%));
+      }
+
+      .side {
+        position: absolute;
+        border-radius: 5px;
+        backface-visibility: hidden;
+        background:
+          linear-gradient(90deg, rgb(255 255 255 / 9%), transparent 38%),
+          linear-gradient(#b13b00, #702000);
+        box-shadow: inset 0 0 8px rgb(54 13 0 / 36%);
+      }
+
+      .left,
+      .right {
+        top: 8%;
+        width: var(--thickness);
+        height: 84%;
+      }
+
+      .left {
+        left: calc(var(--thickness) / -2);
+        transform: rotateY(-90deg);
+      }
+
+      .right {
+        right: calc(var(--thickness) / -2);
+        transform: rotateY(90deg);
+      }
+
+      .top,
+      .bottom {
+        left: 8%;
+        width: 84%;
+        height: var(--thickness);
+        background:
+          linear-gradient(rgb(255 255 255 / 13%), transparent 45%),
+          linear-gradient(90deg, #d95508, #8d2900);
+      }
+
+      .top {
+        top: calc(var(--thickness) / -2);
+        transform: rotateX(90deg);
+      }
+
+      .bottom {
+        bottom: calc(var(--thickness) / -2);
+        transform: rotateX(-90deg);
       }
 
       .mark {
@@ -123,15 +182,19 @@ export function renderPage(): string {
 
       @media (prefers-reduced-motion: reduce) {
         .spinner { animation: none; transform: rotateX(-8deg) rotateY(-22deg); }
-        .face::after { animation: none; }
+        .front::after { animation: none; }
       }
     </style>
   </head>
   <body>
     <main class="scene" aria-label="Spinning orange Lambda icon">
       <div class="spinner">
-        ${depthLayers}
-        <div class="tile face">
+        <div class="side left" aria-hidden="true"></div>
+        <div class="side right" aria-hidden="true"></div>
+        <div class="side top" aria-hidden="true"></div>
+        <div class="side bottom" aria-hidden="true"></div>
+        <div class="tile back" aria-hidden="true">${lambdaMark}</div>
+        <div class="tile front">
           <svg class="mark" viewBox="0 0 1000 1000" role="img" aria-label="AWS Lambda">
             <path d="M250 205 H520 L760 695 H845 V810 H665 L405 325 H250 Z M405 810 H205 L405 410 L515 620 Z"/>
           </svg>

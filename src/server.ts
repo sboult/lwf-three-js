@@ -20,6 +20,7 @@ const texturePath = process.env.AWS_LAMBDA_HTTP_ENDPOINT
 const texture = readFileSync(texturePath);
 
 app.disable("x-powered-by");
+app.set("trust proxy", true);
 
 app.get("/client.js", (_request, response) => {
   response.type("text/javascript").send(clientBundle);
@@ -32,17 +33,58 @@ app.get("/texture.png", (_request, response) => {
     .send(texture);
 });
 
-app.get("/", (_request, response) => {
+app.get("/preview.png", (_request, response) => {
   response
+    .set("cache-control", "public, max-age=86400")
+    .type("image/png")
+    .send(texture);
+});
+
+function requestOrigin(request: express.Request): string {
+  const configuredOrigin = process.env.PUBLIC_ORIGIN?.replace(/\/+$/, "");
+  if (configuredOrigin) {
+    return configuredOrigin;
+  }
+
+  const forwardedProtocol = request.get("x-forwarded-proto")?.split(",")[0];
+  const protocol = forwardedProtocol?.trim() || request.protocol;
+  return `${protocol}://${request.get("host")}`;
+}
+
+function commonHeaders(response: express.Response): express.Response {
+  return response.set({
+    "referrer-policy": "no-referrer",
+    "x-content-type-options": "nosniff",
+  });
+}
+
+app.get("/", (request, response) => {
+  const origin = requestOrigin(request);
+
+  commonHeaders(response)
     .set({
       "cache-control": "public, max-age=300",
       "content-security-policy":
         "default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; img-src 'self'; base-uri 'none'; frame-ancestors 'none'",
-      "referrer-policy": "no-referrer",
-      "x-content-type-options": "nosniff",
     })
     .type("html")
-    .send(renderPage());
+    .send(
+      renderPage({
+        origin,
+        twitterSite: process.env.TWITTER_SITE ?? "@seanboult",
+      }),
+    );
+});
+
+app.get("/embed", (_request, response) => {
+  commonHeaders(response)
+    .set({
+      "cache-control": "public, max-age=300",
+      "content-security-policy":
+        "default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; img-src 'self'; base-uri 'none'; frame-ancestors https://x.com https://twitter.com https://*.x.com https://*.twitter.com",
+    })
+    .type("html")
+    .send(renderPage({ embed: true }));
 });
 
 app.use((_request, response) => {

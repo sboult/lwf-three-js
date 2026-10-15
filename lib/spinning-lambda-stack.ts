@@ -2,6 +2,8 @@ import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   CfnOutput,
+  Fn,
+  RemovalPolicy,
   Stack,
   Validations,
   type StackProps,
@@ -13,10 +15,15 @@ import {
 } from "aws-cdk-lib/aws-lambda";
 import {
   ManagedPolicy,
+  PolicyStatement,
   Role,
   ServicePrincipal,
 } from "aws-cdk-lib/aws-iam";
-import { Asset } from "aws-cdk-lib/aws-s3-assets";
+import { Bucket, BucketEncryption } from "aws-cdk-lib/aws-s3";
+import {
+  BucketDeployment,
+  Source,
+} from "aws-cdk-lib/aws-s3-deployment";
 import type { Construct } from "constructs";
 
 const directory = path.dirname(fileURLToPath(import.meta.url));
@@ -41,10 +48,42 @@ export class SpinningLambdaStack extends Stack {
       ],
     });
 
-    const code = new Asset(this, "WebFunctionCode", {
-      path: path.join(directory, "../dist/web"),
+    const codeBucket = new Bucket(this, "WebFunctionCodeBucket", {
+      versioned: true,
+      encryption: BucketEncryption.S3_MANAGED,
+      enforceSSL: true,
+      blockPublicAccess: {
+        blockPublicAcls: true,
+        blockPublicPolicy: true,
+        ignorePublicAcls: true,
+        restrictPublicBuckets: true,
+      },
+      removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
     });
-    code.grantRead(lambdaService);
+
+    codeBucket.addToResourcePolicy(
+      new PolicyStatement({
+        principals: [lambdaService],
+        actions: ["s3:GetObject", "s3:GetObjectVersion"],
+        resources: [codeBucket.arnForObjects("*")],
+      }),
+    );
+
+    const codeDeployment = new BucketDeployment(
+      this,
+      "WebFunctionCodeDeployment",
+      {
+        destinationBucket: codeBucket,
+        destinationKeyPrefix: "revisions",
+        extract: false,
+        prune: false,
+        sources: [Source.asset(path.join(directory, "../dist/web"))],
+      },
+    );
+
+    const codeObjectKey = Fn.select(0, codeDeployment.objectKeys);
+    const codeObjectVersion = Fn.select(0, codeDeployment.objectVersionIds);
 
     const webFunction = new CfnWebFunction(this, "WebFunction", {
       functionName: `${this.stackName}-web`,
@@ -56,8 +95,9 @@ export class SpinningLambdaStack extends Stack {
       buildConfig: {
         codeConfig: {
           s3Object: {
-            bucket: code.s3BucketName,
-            key: code.s3ObjectKey,
+            bucket: codeBucket.bucketName,
+            key: codeObjectKey,
+            versionId: codeObjectVersion,
           },
         },
         runtimeConfig: {

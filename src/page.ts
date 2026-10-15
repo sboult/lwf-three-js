@@ -1,4 +1,10 @@
 export function renderPage(): string {
+  const depthLayers = Array.from(
+    { length: 14 },
+    (_, index) =>
+      `<div class="tile depth" style="--depth:${index + 1}" aria-hidden="true"></div>`,
+  ).join("");
+
   return `<!doctype html>
 <html lang="en">
   <head>
@@ -22,35 +28,81 @@ export function renderPage(): string {
         place-items: center;
         overflow: hidden;
         background:
-          radial-gradient(circle at 50% 45%, #253147 0, #111827 34%, #080c13 72%);
+          radial-gradient(circle at 50% 42%, #303d55 0, #121a29 36%, #070a10 74%);
       }
 
       .scene {
-        width: min(68vw, 360px);
+        width: min(72vw, 430px);
         aspect-ratio: 1;
         display: grid;
         place-items: center;
-        perspective: 900px;
+        perspective: 1100px;
       }
 
-      .lambda {
-        width: 72%;
-        height: 72%;
-        filter: drop-shadow(0 22px 30px rgb(255 153 0 / 28%));
-        animation: spin 3.2s linear infinite;
+      .spinner {
+        position: relative;
+        width: 76%;
+        aspect-ratio: 1;
         transform-style: preserve-3d;
+        animation: spin 5.5s cubic-bezier(.45, 0, .55, 1) infinite;
       }
 
-      .lambda path {
-        fill: #ff9900;
-        stroke: #ffc46b;
-        stroke-width: 2;
+      .tile {
+        position: absolute;
+        inset: 0;
+        border-radius: 16%;
+        backface-visibility: hidden;
+      }
+
+      .depth {
+        background: linear-gradient(135deg, #a53b00, #692200);
+        transform: translateZ(calc(var(--depth) * -2px));
+        box-shadow: inset -5px -4px 8px rgb(45 12 0 / 28%);
+      }
+
+      .face {
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        background:
+          linear-gradient(145deg, rgb(255 255 255 / 18%), transparent 28%),
+          linear-gradient(145deg, #f48416 0%, #db5f08 58%, #bb4300 100%);
+        border: 1px solid rgb(255 207 153 / 45%);
+        box-shadow:
+          inset 0 2px 3px rgb(255 255 255 / 24%),
+          inset -12px -14px 22px rgb(100 27 0 / 22%),
+          0 28px 48px rgb(0 0 0 / 38%),
+          0 12px 38px rgb(255 111 0 / 22%);
+        transform: translateZ(2px);
+      }
+
+      .face::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(115deg, transparent 32%, rgb(255 255 255 / 16%) 47%, transparent 61%);
+        transform: translateX(-110%);
+        animation: glint 5.5s ease-in-out infinite;
+      }
+
+      .mark {
+        width: 78%;
+        height: 78%;
+        overflow: visible;
+        filter: drop-shadow(0 7px 4px rgb(91 25 0 / 30%));
+      }
+
+      .mark path {
+        fill: none;
+        stroke: #fffaf5;
+        stroke-width: 34;
+        stroke-linecap: round;
         stroke-linejoin: round;
       }
 
       .label {
         position: fixed;
-        bottom: 9vh;
+        top: 9vh;
         margin: 0;
         color: #aeb8c8;
         font-size: clamp(.8rem, 2vw, 1rem);
@@ -59,22 +111,34 @@ export function renderPage(): string {
       }
 
       @keyframes spin {
-        from { transform: rotateY(0deg) rotateX(-8deg); }
-        to { transform: rotateY(360deg) rotateX(-8deg); }
+        0% { transform: rotateX(-10deg) rotateY(-28deg) rotateZ(-2deg); }
+        50% { transform: rotateX(8deg) rotateY(152deg) rotateZ(2deg); }
+        100% { transform: rotateX(-10deg) rotateY(332deg) rotateZ(-2deg); }
+      }
+
+      @keyframes glint {
+        0%, 22% { transform: translateX(-110%); }
+        42%, 100% { transform: translateX(110%); }
       }
 
       @media (prefers-reduced-motion: reduce) {
-        .lambda { animation: none; }
+        .spinner { animation: none; transform: rotateX(-8deg) rotateY(-22deg); }
+        .face::after { animation: none; }
       }
     </style>
   </head>
   <body>
     <main class="scene" aria-label="Spinning orange Lambda icon">
-      <svg class="lambda" viewBox="0 0 220 260" role="img" aria-label="Lambda">
-        <path d="M36 20h65l31 75 24 58 27-51h37l-53 138h-38L75 58H36z"/>
-      </svg>
+      <div class="spinner">
+        ${depthLayers}
+        <div class="tile face">
+          <svg class="mark" viewBox="0 0 1000 1000" role="img" aria-label="AWS Lambda">
+            <path d="M250 205 H520 L760 695 H845 V810 H665 L405 325 H250 Z M405 810 H205 L405 410 L515 620 Z"/>
+          </svg>
+        </div>
+      </div>
     </main>
-    <p class="label">AWS Lambda</p>
+    <p class="label">AWS Lambda Web Functions</p>
   </body>
 </html>`;
 }

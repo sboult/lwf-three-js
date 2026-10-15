@@ -51,11 +51,17 @@ const texture = new THREE.TextureLoader().load("/texture.png");
 texture.colorSpace = THREE.SRGBColorSpace;
 texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
 
-const faceMaterial = new THREE.MeshPhysicalMaterial({
+const backTexture = texture.clone();
+backTexture.needsUpdate = true;
+
+const frontMaterial = new THREE.MeshBasicMaterial({
   map: texture,
-  roughness: 0.4,
-  clearcoat: 0.32,
-  clearcoatRoughness: 0.35,
+  toneMapped: false,
+});
+
+const backMaterial = new THREE.MeshBasicMaterial({
+  map: backTexture,
+  toneMapped: false,
 });
 
 const edgeMaterial = new THREE.MeshPhysicalMaterial({
@@ -72,8 +78,8 @@ const body = new THREE.Mesh(
     edgeMaterial,
     edgeMaterial,
     edgeMaterial,
-    faceMaterial,
-    faceMaterial,
+    frontMaterial,
+    backMaterial,
   ],
 );
 coaster.add(body);

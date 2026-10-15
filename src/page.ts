@@ -4,7 +4,7 @@ export function renderPage(): string {
       <path d="M250 205 H520 L760 695 H845 V810 H665 L405 325 H250 Z M405 810 H205 L405 410 L515 620 Z"/>
     </svg>`;
   const edgeLayers = Array.from(
-    { length: 18 },
+    { length: 17 },
     (_, index) =>
       `<div class="tile edge" style="--layer:${index + 1}" aria-hidden="true"></div>`,
   ).join("");
@@ -98,7 +98,7 @@ export function renderPage(): string {
       }
 
       .back .mark {
-        opacity: .68;
+        opacity: .92;
         filter: drop-shadow(0 5px 3px rgb(46 10 0 / 35%));
       }
 

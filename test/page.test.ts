@@ -8,4 +8,5 @@ test("renders an accessible Three.js Lambda coaster page", () => {
   assert.match(html, /Spinning orange AWS Lambda coaster/);
   assert.match(html, /id="lambda-canvas"/);
   assert.match(html, /src="\/client\.js"/);
+  assert.match(html, /cursor: grab/);
 });

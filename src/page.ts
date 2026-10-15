@@ -34,8 +34,12 @@ export function renderPage(): string {
         display: block;
         width: 100%;
         height: 100%;
+        cursor: grab;
+        touch-action: none;
         filter: drop-shadow(0 26px 26px rgb(0 0 0 / 32%));
       }
+
+      #lambda-canvas:active { cursor: grabbing; }
 
       .label {
         position: fixed;

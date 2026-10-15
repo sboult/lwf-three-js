@@ -71,7 +71,7 @@ app.get("/", (request, response) => {
     .send(
       renderPage({
         origin,
-        twitterSite: process.env.TWITTER_SITE ?? "@seanboult",
+        twitterSite: process.env.TWITTER_SITE ?? "@awsdevelopers",
       }),
     );
 });

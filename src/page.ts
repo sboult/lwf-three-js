@@ -15,7 +15,7 @@ function escapeAttribute(value: string): string {
 export function renderPage({
   embed = false,
   origin,
-  twitterSite = "@seanboult",
+  twitterSite = "@awsdevelopers",
 }: PageOptions = {}): string {
   const title = "AWS Lambda Web Functions";
   const description = "Interactive 3D AWS Lambda coaster";

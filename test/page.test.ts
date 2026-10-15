@@ -5,7 +5,7 @@ import { renderPage } from "../src/page.ts";
 test("renders an accessible Three.js Lambda coaster page", () => {
   const html = renderPage({
     origin: "https://lambda.example.com",
-    twitterSite: "@seanboult",
+    twitterSite: "@awsdevelopers",
   });
 
   assert.match(html, /Spinning orange AWS Lambda coaster/);

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import * as cdk from "aws-cdk-lib";
-import { SpinningLambdaStack } from "../lib/spinning-lambda-stack.js";
+import { SpinningLambdaStack } from "../lib/spinning-lambda-stack.ts";
 
 const app = new cdk.App();
 

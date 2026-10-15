@@ -6,8 +6,8 @@
   "scripts": {
     "build:web": "node scripts/build-web.mjs",
     "build": "tsc --noEmit && npm run build:web",
-    "test": "tsx --test test/*.test.ts",
-    "local": "tsx src/local.ts",
+    "test": "node --test test/*.test.ts",
+    "local": "node --watch src/local.ts",
     "synth": "npm run build:web && cdk synth --strict",
     "deploy": "npm run build:web && cdk deploy",
     "destroy": "cdk destroy"
@@ -23,7 +23,6 @@
     "@types/node": "^22.18.10",
     "aws-cdk": "^2.1145.0",
     "esbuild": "^0.25.11",
-    "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   }
 }

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { renderPage } from "../src/page.js";
+import { renderPage } from "../src/page.ts";
 
 test("renders an accessible animated Lambda page", () => {
   const html = renderPage();

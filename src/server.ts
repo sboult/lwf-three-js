@@ -1,5 +1,5 @@
 import express from "express";
-import { renderPage } from "./page.js";
+import { renderPage } from "./page.ts";
 
 const [hostname, rawPort] = (
   process.env.AWS_LAMBDA_HTTP_ENDPOINT ??

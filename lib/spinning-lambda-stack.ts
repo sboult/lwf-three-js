@@ -82,7 +82,10 @@ export class SpinningLambdaStack extends Stack {
       },
     );
 
-    const codeObjectKey = Fn.select(0, codeDeployment.objectKeys);
+    const codeObjectKey = Fn.join("", [
+      "revisions/",
+      Fn.select(0, codeDeployment.objectKeys),
+    ]);
     const codeObjectVersion = Fn.select(0, codeDeployment.objectVersionIds);
 
     const webFunction = new CfnWebFunction(this, "WebFunction", {

@@ -7,7 +7,7 @@
     "build:web": "node scripts/build-web.mjs",
     "build": "tsc --noEmit && npm run build:web",
     "test": "node --test test/*.test.ts",
-    "local": "node --watch src/local.ts",
+    "local": "npm run build:web && node --watch --watch-path=src src/local.ts",
     "synth": "npm run build:web && cdk synth --strict",
     "deploy": "npm run build:web && cdk deploy",
     "destroy": "cdk destroy"
@@ -15,12 +15,14 @@
   "dependencies": {
     "aws-cdk-lib": "^2.273.0",
     "constructs": "^10.4.2",
-    "express": "^5.3.0"
+    "express": "^5.3.0",
+    "three": "^0.186.1"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.152",
     "@types/express": "^5.0.6",
     "@types/node": "^22.18.10",
+    "@types/three": "^0.186.0",
     "aws-cdk": "^2.1145.0",
     "esbuild": "^0.25.11",
     "typescript": "^5.9.3"

@@ -1,14 +1,4 @@
 export function renderPage(): string {
-  const lambdaMark = `
-    <svg class="mark" viewBox="0 0 1000 1000" aria-hidden="true">
-      <path d="M250 205 H520 L760 695 H845 V810 H665 L405 325 H250 Z M405 810 H205 L405 410 L515 620 Z"/>
-    </svg>`;
-  const edgeLayers = Array.from(
-    { length: 17 },
-    (_, index) =>
-      `<div class="tile edge" style="--layer:${index + 1}" aria-hidden="true"></div>`,
-  ).join("");
-
   return `<!doctype html>
 <html lang="en">
   <head>
@@ -19,7 +9,7 @@ export function renderPage(): string {
       :root {
         color-scheme: dark;
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
-        background: #0b1019;
+        background: #080c13;
         color: #f7f8fa;
       }
 
@@ -36,105 +26,15 @@ export function renderPage(): string {
       }
 
       .scene {
-        width: min(72vw, 430px);
+        width: min(82vw, 560px);
         aspect-ratio: 1;
-        display: grid;
-        place-items: center;
-        perspective: 1100px;
       }
 
-      .spinner {
-        --thickness: 36px;
-        position: relative;
-        width: 76%;
-        aspect-ratio: 1;
-        transform-style: preserve-3d;
-        animation: spin 5.5s cubic-bezier(.45, 0, .55, 1) infinite;
-      }
-
-      .tile {
-        position: absolute;
-        inset: 0;
-        border-radius: 13%;
-        backface-visibility: hidden;
-      }
-
-      .front,
-      .back {
-        display: grid;
-        place-items: center;
-        overflow: hidden;
-      }
-
-      .front {
-        background:
-          linear-gradient(145deg, rgb(255 255 255 / 18%), transparent 28%),
-          linear-gradient(145deg, #f48416 0%, #db5f08 58%, #bb4300 100%);
-        border: 1px solid rgb(255 207 153 / 45%);
-        box-shadow:
-          inset 0 2px 3px rgb(255 255 255 / 24%),
-          inset -12px -14px 22px rgb(100 27 0 / 22%),
-          0 28px 48px rgb(0 0 0 / 38%),
-          0 12px 38px rgb(255 111 0 / 22%);
-        transform: translateZ(calc(var(--thickness) / 2));
-      }
-
-      .front::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(115deg, transparent 32%, rgb(255 255 255 / 16%) 47%, transparent 61%);
-        transform: translateX(-110%);
-        animation: glint 5.5s ease-in-out infinite;
-      }
-
-      .back {
-        background:
-          linear-gradient(145deg, rgb(255 255 255 / 8%), transparent 32%),
-          linear-gradient(145deg, #c84b00, #8e2d00);
-        border: 1px solid rgb(255 166 92 / 34%);
-        box-shadow: inset 10px 12px 24px rgb(66 17 0 / 30%);
-        transform: rotateY(180deg) translateZ(calc(var(--thickness) / 2));
-      }
-
-      .back .mark {
-        opacity: .92;
-        filter: drop-shadow(0 5px 3px rgb(46 10 0 / 35%));
-      }
-
-      .edge {
-        inset: 1px;
-        backface-visibility: visible;
-        background:
-          linear-gradient(100deg, rgb(255 255 255 / 7%), transparent 30%),
-          linear-gradient(145deg, #cd4d05, #842600);
-        box-shadow: inset -3px -2px 5px rgb(57 13 0 / 22%);
-        transform: translateZ(calc(
-          (var(--thickness) / 2) - (var(--layer) * 2px)
-        ));
-      }
-
-      .edge::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border: 1px solid rgb(255 137 66 / 7%);
-        border-radius: inherit;
-      }
-
-      .mark {
-        width: 78%;
-        height: 78%;
-        overflow: visible;
-        filter: drop-shadow(0 7px 4px rgb(91 25 0 / 30%));
-      }
-
-      .mark path {
-        fill: none;
-        stroke: #fffaf5;
-        stroke-width: 34;
-        stroke-linecap: round;
-        stroke-linejoin: round;
+      #lambda-canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        filter: drop-shadow(0 26px 26px rgb(0 0 0 / 32%));
       }
 
       .label {
@@ -146,35 +46,12 @@ export function renderPage(): string {
         letter-spacing: .28em;
         text-transform: uppercase;
       }
-
-      @keyframes spin {
-        0% { transform: rotateX(-10deg) rotateY(-28deg) rotateZ(-2deg); }
-        50% { transform: rotateX(8deg) rotateY(152deg) rotateZ(2deg); }
-        100% { transform: rotateX(-10deg) rotateY(332deg) rotateZ(-2deg); }
-      }
-
-      @keyframes glint {
-        0%, 22% { transform: translateX(-110%); }
-        42%, 100% { transform: translateX(110%); }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .spinner { animation: none; transform: rotateX(-8deg) rotateY(-22deg); }
-        .front::after { animation: none; }
-      }
     </style>
+    <script src="/client.js" type="module"></script>
   </head>
   <body>
-    <main class="scene" aria-label="Spinning orange Lambda icon">
-      <div class="spinner">
-        <div class="tile back" aria-hidden="true">${lambdaMark}</div>
-        ${edgeLayers}
-        <div class="tile front">
-          <svg class="mark" viewBox="0 0 1000 1000" role="img" aria-label="AWS Lambda">
-            <path d="M250 205 H520 L760 695 H845 V810 H665 L405 325 H250 Z M405 810 H205 L405 410 L515 620 Z"/>
-          </svg>
-        </div>
-      </div>
+    <main class="scene" aria-label="Spinning orange AWS Lambda coaster">
+      <canvas id="lambda-canvas"></canvas>
     </main>
     <p class="label">AWS Lambda Web Functions</p>
   </body>

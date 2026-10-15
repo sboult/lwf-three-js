@@ -104,6 +104,7 @@ export function renderPage(): string {
 
       .edge {
         inset: 1px;
+        backface-visibility: visible;
         background:
           linear-gradient(100deg, rgb(255 255 255 / 7%), transparent 30%),
           linear-gradient(145deg, #cd4d05, #842600);

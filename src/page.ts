@@ -43,13 +43,17 @@ export function renderPage(): string {
 
       .label {
         position: fixed;
-        top: 9vh;
+        top: 7vh;
         margin: 0;
-        color: #aeb8c8;
-        font-size: clamp(.8rem, 2vw, 1rem);
-        letter-spacing: .28em;
-        text-transform: uppercase;
+        color: #f4f7fb;
+        font-size: clamp(1.8rem, 5vw, 3.4rem);
+        font-weight: 800;
+        line-height: .98;
+        letter-spacing: -.035em;
+        text-align: center;
       }
+
+      .label span { display: block; }
     </style>
     <script src="/client.js" type="module"></script>
   </head>
@@ -57,7 +61,10 @@ export function renderPage(): string {
     <main class="scene" aria-label="Spinning orange AWS Lambda coaster">
       <canvas id="lambda-canvas"></canvas>
     </main>
-    <p class="label">AWS Lambda Web Functions</p>
+    <h1 class="label">
+      <span>AWS Lambda</span>
+      <span>Web Functions</span>
+    </h1>
   </body>
 </html>`;
 }

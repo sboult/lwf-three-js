@@ -1,5 +1,6 @@
 node_modules/
 cdk.out/
+dist/
 coverage/
 *.log
 .DS_Store

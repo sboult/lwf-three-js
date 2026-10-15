@@ -1,7 +1,11 @@
-# Spinning Lambda
+# Spinning Lambda Web Function
 
-A tiny web page served by an AWS Lambda Function URL. It displays a spinning
-orange Lambda icon and uses the same page renderer locally and in AWS.
+A tiny Express app served by an AWS Lambda Web Function. It displays a spinning
+orange Lambda icon and runs the same standard Express HTTP server locally and
+in AWS.
+
+There is deliberately no Lambda handler, Function URL, API Gateway integration,
+or web adapter. Express listens directly on `AWS_LAMBDA_HTTP_ENDPOINT`.
 
 ## Run locally
 
@@ -31,6 +35,11 @@ npm run deploy
 
 CDK prints `WebFunctionUrl` when deployment completes.
 
-The Function URL is intentionally public (`AuthType: NONE`) so the page can be
-opened in any browser. It has no built-in rate limiting or WAF; put CloudFront
-and AWS WAF in front of it before using this pattern for a production site.
+The stack uses CDK's native L1 constructs for
+`AWS::Lambda::WebFunction`, `AWS::Lambda::WebFunctionRevision`, and
+`AWS::Lambda::WebFunctionEndpoint` CloudFormation resource types.
+
+The endpoint uses application-managed authentication so the demo can be opened
+in a browser. It is limited to two execution environments and 100 requests per
+second for cost control. Put CloudFront and AWS WAF in front of it before using
+this pattern for a production site.

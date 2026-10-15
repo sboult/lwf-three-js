@@ -2,16 +2,21 @@ import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   CfnOutput,
-  Duration,
   Stack,
+  Validations,
   type StackProps,
 } from "aws-cdk-lib";
 import {
-  Architecture,
-  FunctionUrlAuthType,
-  Runtime,
+  CfnWebFunction,
+  CfnWebFunctionEndpoint,
+  CfnWebFunctionRevision,
 } from "aws-cdk-lib/aws-lambda";
-import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
+import {
+  ManagedPolicy,
+  Role,
+  ServicePrincipal,
+} from "aws-cdk-lib/aws-iam";
+import { Asset } from "aws-cdk-lib/aws-s3-assets";
 import type { Construct } from "constructs";
 
 const directory = path.dirname(fileURLToPath(import.meta.url));
@@ -20,27 +25,75 @@ export class SpinningLambdaStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const webFunction = new NodejsFunction(this, "WebFunction", {
-      entry: path.join(directory, "../src/handler.ts"),
-      handler: "handler",
-      runtime: Runtime.NODEJS_22_X,
-      architecture: Architecture.ARM_64,
-      memorySize: 256,
-      timeout: Duration.seconds(5),
-      bundling: {
-        minify: true,
-        sourceMap: true,
+    Validations.of(this).acknowledge({
+      id: "CloudFormation-Validate::F3006",
+      reason:
+        "The generated CDK Web Function constructs are newer than CDK's bundled CloudFormation validation schema.",
+    });
+
+    const lambdaService = new ServicePrincipal("lambda.amazonaws.com");
+    const executionRole = new Role(this, "WebFunctionExecutionRole", {
+      assumedBy: lambdaService,
+      managedPolicies: [
+        ManagedPolicy.fromAwsManagedPolicyName(
+          "service-role/AWSLambdaBasicExecutionRole",
+        ),
+      ],
+    });
+
+    const code = new Asset(this, "WebFunctionCode", {
+      path: path.join(directory, "../dist/web"),
+    });
+    code.grantRead(lambdaService);
+
+    const webFunction = new CfnWebFunction(this, "WebFunction", {
+      functionName: `${this.stackName}-web`,
+    });
+
+    const revision = new CfnWebFunctionRevision(this, "WebFunctionRevision", {
+      functionName: webFunction.ref,
+      description: "Adapterless Express spinning Lambda demo",
+      buildConfig: {
+        codeConfig: {
+          s3Object: {
+            bucket: code.s3BucketName,
+            key: code.s3ObjectKey,
+          },
+        },
+        runtimeConfig: {
+          runtime: "nodejs24.x",
+        },
+      },
+      serviceConfig: {
+        executionRoleArn: executionRole.roleArn,
+        maxConcurrencyPerEnvironment: 10,
+        timeoutSeconds: 30,
       },
     });
 
-    // This demo is intentionally public so a browser can open it directly.
-    const functionUrl = webFunction.addFunctionUrl({
-      authType: FunctionUrlAuthType.NONE,
+    const endpoint = new CfnWebFunctionEndpoint(this, "WebFunctionEndpoint", {
+      authType: "ApplicationManaged",
+      description: "Public endpoint for the adapterless Express demo",
+      endpointName: "live",
+      endpointType: "HomeRegion",
+      functionName: webFunction.ref,
+      revisionWeights: [
+        {
+          revisionId: revision.attrRevisionId,
+          weight: 100,
+        },
+      ],
+      scalingConfig: {
+        maxEnvironments: 2,
+      },
+      throttleConfig: {
+        rateLimit: 100,
+      },
     });
 
     new CfnOutput(this, "WebFunctionUrl", {
-      value: functionUrl.url,
-      description: "Public URL for the spinning Lambda page",
+      value: `https://${endpoint.attrDomainName}`,
+      description: "Public URL for the AWS Lambda Web Function",
     });
   }
 }

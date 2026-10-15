@@ -10,6 +10,9 @@ await build({
   format: "esm",
   platform: "node",
   target: "node24",
+  banner: {
+    js: 'import { createRequire } from "node:module"; const require = createRequire(import.meta.url);',
+  },
   minify: true,
   sourcemap: true,
 });

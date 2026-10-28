@@ -13,6 +13,10 @@ test("renders an accessible Three.js Lambda coaster page", () => {
   expect(html).toMatch(/cursor: grab/);
   expect(html).toMatch(/<span>AWS Lambda<\/span>/);
   expect(html).toMatch(/<span>Web Functions<\/span>/);
+  expect(html).toMatch(
+    /href="https:\/\/github\.com\/sboult\/lwf-three-js"/,
+  );
+  expect(html).toMatch(/>View source code<\/a>/);
   expect(html).toMatch(/name="twitter:card" content="player"/);
   expect(html).toMatch(
     /name="twitter:player" content="https:\/\/lambda\.example\.com\/embed"/,

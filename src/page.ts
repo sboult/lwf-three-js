@@ -5,6 +5,7 @@ import {
   DEFAULT_TWITTER_SITE,
   EMBED_PATH,
   PREVIEW_IMAGE_PATH,
+  SOURCE_CODE_URL,
 } from "./constants.ts";
 
 export interface PageOptions {
@@ -85,6 +86,12 @@ export function renderPage({
         aspect-ratio: 1;
       }
 
+      .content {
+        display: grid;
+        justify-items: center;
+        gap: 1rem;
+      }
+
       #lambda-canvas {
         display: block;
         width: 100%;
@@ -109,13 +116,24 @@ export function renderPage({
       }
 
       .label span { display: block; }
+
+      .source-link {
+        color: #c8d8f0;
+        font-size: .9rem;
+        text-underline-offset: .25em;
+      }
+
+      .source-link:hover { color: #fff; }
     </style>
     <script src="${CLIENT_SCRIPT_PATH}" type="module"></script>
   </head>
   <body class="${bodyClass}">
-    <main class="scene" aria-label="Spinning orange AWS Lambda coaster">
-      <canvas id="lambda-canvas"></canvas>
-    </main>${heading}
+    <div class="content">
+      <main class="scene" aria-label="Spinning orange AWS Lambda coaster">
+        <canvas id="lambda-canvas"></canvas>
+      </main>
+      <a class="source-link" href="${SOURCE_CODE_URL}" target="_blank" rel="noreferrer">View source code</a>
+    </div>${heading}
   </body>
 </html>`;
 }

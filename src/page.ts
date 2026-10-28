@@ -85,18 +85,16 @@ export function renderPage({
       }
 
       .scene {
-        width: min(82vw, 560px);
+        width: min(82vw, 68vh, 560px);
         aspect-ratio: 1;
       }
 
       .content {
-        min-height: 0;
-        flex: 1;
+        position: fixed;
+        inset: 0;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 1rem;
       }
 
       #lambda-canvas {
@@ -111,6 +109,8 @@ export function renderPage({
       #lambda-canvas:active { cursor: grabbing; }
 
       .label {
+        position: relative;
+        z-index: 1;
         margin: 7vh 0 0;
         color: #f4f7fb;
         font-size: clamp(1.8rem, 5vw, 3.4rem);
@@ -136,6 +136,14 @@ export function renderPage({
       }
 
       .source-link:hover { color: #fff; }
+
+      .footer {
+        position: fixed;
+        z-index: 1;
+        bottom: 3vh;
+        left: 50%;
+        transform: translateX(-50%);
+      }
     </style>
     <script src="${CLIENT_SCRIPT_PATH}" type="module"></script>
   </head>
@@ -145,8 +153,10 @@ export function renderPage({
       <main class="scene" aria-label="Spinning orange AWS Lambda coaster">
         <canvas id="lambda-canvas"></canvas>
       </main>
-      <a class="source-link" href="${SOURCE_CODE_URL}" target="_blank" rel="noreferrer">View source code</a>
     </div>
+    <footer class="footer">
+      <a class="source-link" href="${SOURCE_CODE_URL}" target="_blank" rel="noreferrer">View source code</a>
+    </footer>
   </body>
 </html>`;
 }

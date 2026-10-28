@@ -18,6 +18,7 @@ test("renders an accessible Three.js Lambda coaster page", () => {
   expect(html).toMatch(
     /href="https:\/\/github\.com\/sboult\/lwf-three-js"/,
   );
+  expect(html).toMatch(/<footer class="footer">/);
   expect(html).toMatch(/>View source code<\/a>/);
   expect(html).toMatch(/name="twitter:card" content="player"/);
   expect(html).toMatch(

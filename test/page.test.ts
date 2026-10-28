@@ -27,10 +27,12 @@ test("renders an accessible Three.js Lambda coaster page", () => {
   assert.match(html, /name="twitter:player:height" content="480"/);
 });
 
-test("renders a chrome-free embed without share metadata", () => {
+test("renders an embed with the heading and without share metadata", () => {
   const html = renderPage({ embed: true });
 
   assert.match(html, /<body class="embed">/);
-  assert.doesNotMatch(html, /class="label"/);
+  assert.match(html, /class="label"/);
+  assert.match(html, /<span>AWS Lambda<\/span>/);
+  assert.match(html, /<span>Web Functions<\/span>/);
   assert.doesNotMatch(html, /twitter:card/);
 });

@@ -47,9 +47,7 @@ export function renderPage({
       : "";
 
   const bodyClass = embed ? "embed" : "share";
-  const heading = embed
-    ? ""
-    : `
+  const heading = `
     <h1 class="label">
       <span>AWS Lambda</span>
       <span>Web Functions</span>

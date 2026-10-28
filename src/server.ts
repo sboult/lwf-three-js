@@ -1,44 +1,36 @@
 import express from "express";
-import { readFileSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { DEFAULT_TWITTER_SITE, EMBED_PATH } from "./constants.ts";
 import { renderPage } from "./page.ts";
+
+const DEFAULT_PORT = "3000";
+const STATIC_CACHE_MAX_AGE = "1d";
+const PAGE_CACHE_CONTROL = "public, max-age=300";
+const BASE_CONTENT_SECURITY_POLICY =
+  "default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; img-src 'self'; base-uri 'none'";
 
 const [hostname, rawPort] = (
   process.env.AWS_LAMBDA_HTTP_ENDPOINT ??
-  `127.0.0.1:${process.env.PORT ?? "3000"}`
+  `127.0.0.1:${process.env.PORT ?? DEFAULT_PORT}`
 ).split(":");
 const port = Number(rawPort);
 
 export const app = express();
-const clientBundlePath = process.env.AWS_LAMBDA_HTTP_ENDPOINT
-  ? new URL("./client.js", import.meta.url)
-  : path.resolve("dist/web/client.js");
-const clientBundle = readFileSync(clientBundlePath, "utf8");
-const texturePath = process.env.AWS_LAMBDA_HTTP_ENDPOINT
-  ? new URL("./texture.png", import.meta.url)
-  : path.resolve("dist/web/texture.png");
-const texture = readFileSync(texturePath);
+const publicDirectory = process.env.AWS_LAMBDA_HTTP_ENDPOINT
+  ? fileURLToPath(new URL("./public/", import.meta.url))
+  : path.resolve("dist/web/public");
 
 app.disable("x-powered-by");
 app.set("trust proxy", true);
 
-app.get("/client.js", (_request, response) => {
-  response.type("text/javascript").send(clientBundle);
-});
-
-app.get("/texture.png", (_request, response) => {
-  response
-    .set("cache-control", "public, max-age=86400")
-    .type("image/png")
-    .send(texture);
-});
-
-app.get("/preview.png", (_request, response) => {
-  response
-    .set("cache-control", "public, max-age=86400")
-    .type("image/png")
-    .send(texture);
-});
+app.use(
+  express.static(publicDirectory, {
+    fallthrough: true,
+    index: false,
+    maxAge: STATIC_CACHE_MAX_AGE,
+  }),
+);
 
 function requestOrigin(request: express.Request): string {
   const configuredOrigin = process.env.PUBLIC_ORIGIN?.replace(/\/+$/, "");
@@ -63,25 +55,23 @@ app.get("/", (request, response) => {
 
   commonHeaders(response)
     .set({
-      "cache-control": "public, max-age=300",
-      "content-security-policy":
-        "default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; img-src 'self'; base-uri 'none'; frame-ancestors 'none'",
+      "cache-control": PAGE_CACHE_CONTROL,
+      "content-security-policy": `${BASE_CONTENT_SECURITY_POLICY}; frame-ancestors 'none'`,
     })
     .type("html")
     .send(
       renderPage({
         origin,
-        twitterSite: process.env.TWITTER_SITE ?? "@awsdevelopers",
+        twitterSite: process.env.TWITTER_SITE ?? DEFAULT_TWITTER_SITE,
       }),
     );
 });
 
-app.get("/embed", (_request, response) => {
+app.get(EMBED_PATH, (_request, response) => {
   commonHeaders(response)
     .set({
-      "cache-control": "public, max-age=300",
-      "content-security-policy":
-        "default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; img-src 'self'; base-uri 'none'; frame-ancestors https://x.com https://twitter.com https://*.x.com https://*.twitter.com",
+      "cache-control": PAGE_CACHE_CONTROL,
+      "content-security-policy": `${BASE_CONTENT_SECURITY_POLICY}; frame-ancestors https://x.com https://twitter.com https://*.x.com https://*.twitter.com`,
     })
     .type("html")
     .send(renderPage({ embed: true }));

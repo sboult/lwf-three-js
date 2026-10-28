@@ -1,3 +1,12 @@
+import {
+  APP_DESCRIPTION,
+  APP_TITLE,
+  CLIENT_SCRIPT_PATH,
+  DEFAULT_TWITTER_SITE,
+  EMBED_PATH,
+  PREVIEW_IMAGE_PATH,
+} from "./constants.ts";
+
 export interface PageOptions {
   embed?: boolean;
   origin?: string;
@@ -15,26 +24,24 @@ function escapeAttribute(value: string): string {
 export function renderPage({
   embed = false,
   origin,
-  twitterSite = "@awsdevelopers",
+  twitterSite = DEFAULT_TWITTER_SITE,
 }: PageOptions = {}): string {
-  const title = "AWS Lambda Web Functions";
-  const description = "Interactive 3D AWS Lambda coaster";
-  const playerUrl = origin ? `${origin}/embed` : undefined;
-  const imageUrl = origin ? `${origin}/preview.png` : undefined;
+  const playerUrl = origin ? `${origin}${EMBED_PATH}` : undefined;
+  const imageUrl = origin ? `${origin}${PREVIEW_IMAGE_PATH}` : undefined;
 
   const cardMetadata =
     !embed && playerUrl && imageUrl
       ? `
     <meta name="twitter:card" content="player">
     <meta name="twitter:site" content="${escapeAttribute(twitterSite)}">
-    <meta name="twitter:title" content="${title}">
-    <meta name="twitter:description" content="${description}">
+    <meta name="twitter:title" content="${APP_TITLE}">
+    <meta name="twitter:description" content="${APP_DESCRIPTION}">
     <meta name="twitter:player" content="${escapeAttribute(playerUrl)}">
     <meta name="twitter:player:width" content="480">
     <meta name="twitter:player:height" content="480">
     <meta name="twitter:image" content="${escapeAttribute(imageUrl)}">
-    <meta property="og:title" content="${title}">
-    <meta property="og:description" content="${description}">
+    <meta property="og:title" content="${APP_TITLE}">
+    <meta property="og:description" content="${APP_DESCRIPTION}">
     <meta property="og:type" content="website">
     <meta property="og:image" content="${escapeAttribute(imageUrl)}">`
       : "";
@@ -53,8 +60,8 @@ export function renderPage({
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="${description}">
-    <title>${title}</title>${cardMetadata}
+    <meta name="description" content="${APP_DESCRIPTION}">
+    <title>${APP_TITLE}</title>${cardMetadata}
     <style>
       :root {
         color-scheme: dark;
@@ -111,7 +118,7 @@ export function renderPage({
 
       .label span { display: block; }
     </style>
-    <script src="/client.js" type="module"></script>
+    <script src="${CLIENT_SCRIPT_PATH}" type="module"></script>
   </head>
   <body class="${bodyClass}">
     <main class="scene" aria-label="Spinning orange AWS Lambda coaster">

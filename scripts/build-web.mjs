@@ -1,4 +1,4 @@
-import { copyFile, rm, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, rm, writeFile } from "node:fs/promises";
 import { build } from "esbuild";
 
 await rm("dist/web", { force: true, recursive: true });
@@ -19,7 +19,7 @@ await build({
 
 await build({
   entryPoints: ["src/client.ts"],
-  outfile: "dist/web/client.js",
+  outfile: "dist/web/public/client.js",
   bundle: true,
   format: "esm",
   platform: "browser",
@@ -28,5 +28,9 @@ await build({
   sourcemap: true,
 });
 
+await mkdir("dist/web/public", { recursive: true });
 await writeFile("dist/web/package.json", '{"type":"module"}\n');
-await copyFile("src/assets/texture.png", "dist/web/texture.png");
+await Promise.all([
+  copyFile("src/assets/texture.png", "dist/web/public/texture.png"),
+  copyFile("src/assets/texture.png", "dist/web/public/preview.png"),
+]);

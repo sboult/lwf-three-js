@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { TEXTURE_PATH } from "./constants.ts";
 
 function getCanvas(): HTMLCanvasElement {
   const element = document.querySelector<HTMLCanvasElement>("#lambda-canvas");
@@ -47,7 +48,7 @@ scene.add(rimLight);
 const coaster = new THREE.Group();
 scene.add(coaster);
 
-const texture = new THREE.TextureLoader().load("/texture.png");
+const texture = new THREE.TextureLoader().load(TEXTURE_PATH);
 texture.colorSpace = THREE.SRGBColorSpace;
 texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
 

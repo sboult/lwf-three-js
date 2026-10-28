@@ -1,5 +1,4 @@
-import assert from "node:assert/strict";
-import test from "node:test";
+import { expect, test } from "vitest";
 import { renderPage } from "../src/page.ts";
 
 test("renders an accessible Three.js Lambda coaster page", () => {
@@ -8,31 +7,29 @@ test("renders an accessible Three.js Lambda coaster page", () => {
     twitterSite: "@awsdevelopers",
   });
 
-  assert.match(html, /Spinning orange AWS Lambda coaster/);
-  assert.match(html, /id="lambda-canvas"/);
-  assert.match(html, /src="\/client\.js"/);
-  assert.match(html, /cursor: grab/);
-  assert.match(html, /<span>AWS Lambda<\/span>/);
-  assert.match(html, /<span>Web Functions<\/span>/);
-  assert.match(html, /name="twitter:card" content="player"/);
-  assert.match(
-    html,
+  expect(html).toMatch(/Spinning orange AWS Lambda coaster/);
+  expect(html).toMatch(/id="lambda-canvas"/);
+  expect(html).toMatch(/src="\/client\.js"/);
+  expect(html).toMatch(/cursor: grab/);
+  expect(html).toMatch(/<span>AWS Lambda<\/span>/);
+  expect(html).toMatch(/<span>Web Functions<\/span>/);
+  expect(html).toMatch(/name="twitter:card" content="player"/);
+  expect(html).toMatch(
     /name="twitter:player" content="https:\/\/lambda\.example\.com\/embed"/,
   );
-  assert.match(
-    html,
+  expect(html).toMatch(
     /name="twitter:image" content="https:\/\/lambda\.example\.com\/preview\.png"/,
   );
-  assert.match(html, /name="twitter:player:width" content="480"/);
-  assert.match(html, /name="twitter:player:height" content="480"/);
+  expect(html).toMatch(/name="twitter:player:width" content="480"/);
+  expect(html).toMatch(/name="twitter:player:height" content="480"/);
 });
 
 test("renders an embed with the heading and without share metadata", () => {
   const html = renderPage({ embed: true });
 
-  assert.match(html, /<body class="embed">/);
-  assert.match(html, /class="label"/);
-  assert.match(html, /<span>AWS Lambda<\/span>/);
-  assert.match(html, /<span>Web Functions<\/span>/);
-  assert.doesNotMatch(html, /twitter:card/);
+  expect(html).toMatch(/<body class="embed">/);
+  expect(html).toMatch(/class="label"/);
+  expect(html).toMatch(/<span>AWS Lambda<\/span>/);
+  expect(html).toMatch(/<span>Web Functions<\/span>/);
+  expect(html).not.toMatch(/twitter:card/);
 });

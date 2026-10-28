@@ -17,9 +17,11 @@ const [hostname, rawPort] = (
 const port = Number(rawPort);
 
 export const app = express();
-const publicDirectory = process.env.AWS_LAMBDA_HTTP_ENDPOINT
-  ? fileURLToPath(new URL("./public/", import.meta.url))
-  : path.resolve("dist/web/public");
+const publicDirectory =
+  process.env.PUBLIC_DIRECTORY ??
+  (process.env.AWS_LAMBDA_HTTP_ENDPOINT
+    ? fileURLToPath(new URL("./public/", import.meta.url))
+    : path.resolve("dist/web/public"));
 
 app.disable("x-powered-by");
 app.set("trust proxy", true);

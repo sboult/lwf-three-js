@@ -7,7 +7,7 @@
     "build:web": "node scripts/build-web.mjs",
     "build": "tsc --noEmit && npm run build:web",
     "test": "node --test test/*.test.ts",
-    "local": "npm run build:web && node --watch --watch-path=src src/local.ts",
+    "local": "node --watch --watch-path=src src/local.ts",
     "synth": "npm run build:web && cdk synth --strict",
     "deploy": "npm run build:web && cdk deploy",
     "destroy": "cdk destroy"

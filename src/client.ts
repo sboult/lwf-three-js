@@ -73,7 +73,7 @@ const edgeMaterial = new THREE.MeshPhysicalMaterial({
 });
 
 const body = new THREE.Mesh(
-  new THREE.BoxGeometry(3.45, 3.45, 0.38),
+  new THREE.BoxGeometry(2.48, 2.48, 0.272),
   [
     edgeMaterial,
     edgeMaterial,

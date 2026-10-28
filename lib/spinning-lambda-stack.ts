@@ -88,6 +88,8 @@ export class SpinningLambdaStack extends Stack {
     ]);
     const codeObjectVersion = Fn.select(0, codeDeployment.objectVersionIds);
 
+    // NOTE: Web Functions currently require CDK L1 constructs. L2 construct support
+    // is tracked upstream at https://github.com/aws/aws-cdk/pull/39210.
     const webFunction = new CfnWebFunction(this, "WebFunction", {
       functionName: `${this.stackName}-web`,
     });

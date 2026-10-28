@@ -3,6 +3,7 @@ import {
   APP_TITLE,
   CLIENT_SCRIPT_PATH,
   DEFAULT_TWITTER_SITE,
+  DOCUMENTATION_URL,
   EMBED_PATH,
   PREVIEW_IMAGE_PATH,
   SOURCE_CODE_URL,
@@ -50,8 +51,9 @@ export function renderPage({
   const bodyClass = embed ? "embed" : "share";
   const heading = `
     <h1 class="label">
-      <span>AWS Lambda</span>
-      <span>Web Functions</span>
+      <a class="docs-link" href="${DOCUMENTATION_URL}" target="_blank" rel="noreferrer">
+        Web Function Demo
+      </a>
     </h1>`;
 
   return `<!doctype html>
@@ -74,8 +76,9 @@ export function renderPage({
       body {
         min-height: 100vh;
         margin: 0;
-        display: grid;
-        place-items: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         overflow: hidden;
         background:
           radial-gradient(circle at 50% 42%, #303d55 0, #121a29 36%, #070a10 74%);
@@ -87,8 +90,12 @@ export function renderPage({
       }
 
       .content {
-        display: grid;
-        justify-items: center;
+        min-height: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         gap: 1rem;
       }
 
@@ -104,18 +111,23 @@ export function renderPage({
       #lambda-canvas:active { cursor: grabbing; }
 
       .label {
-        position: fixed;
-        top: 7vh;
-        margin: 0;
+        margin: 7vh 0 0;
         color: #f4f7fb;
         font-size: clamp(1.8rem, 5vw, 3.4rem);
         font-weight: 800;
-        line-height: .98;
+        line-height: 1.08;
         letter-spacing: -.035em;
         text-align: center;
       }
 
       .label span { display: block; }
+
+      .docs-link {
+        color: #58a6ff;
+        text-decoration: underline;
+        text-decoration-thickness: .06em;
+        text-underline-offset: .16em;
+      }
 
       .source-link {
         color: #c8d8f0;
@@ -128,12 +140,13 @@ export function renderPage({
     <script src="${CLIENT_SCRIPT_PATH}" type="module"></script>
   </head>
   <body class="${bodyClass}">
+    ${heading}
     <div class="content">
       <main class="scene" aria-label="Spinning orange AWS Lambda coaster">
         <canvas id="lambda-canvas"></canvas>
       </main>
       <a class="source-link" href="${SOURCE_CODE_URL}" target="_blank" rel="noreferrer">View source code</a>
-    </div>${heading}
+    </div>
   </body>
 </html>`;
 }

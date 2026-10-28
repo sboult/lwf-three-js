@@ -11,8 +11,10 @@ test("renders an accessible Three.js Lambda coaster page", () => {
   expect(html).toMatch(/id="lambda-canvas"/);
   expect(html).toMatch(/src="\/client\.js"/);
   expect(html).toMatch(/cursor: grab/);
-  expect(html).toMatch(/<span>AWS Lambda<\/span>/);
-  expect(html).toMatch(/<span>Web Functions<\/span>/);
+  expect(html).toMatch(/Web Function Demo/);
+  expect(html).toMatch(
+    /href="https:\/\/docs\.aws\.amazon\.com\/lambda\/latest\/dg\/web-functions\.html"/,
+  );
   expect(html).toMatch(
     /href="https:\/\/github\.com\/sboult\/lwf-three-js"/,
   );
@@ -33,8 +35,7 @@ test("renders an embed with the heading and without share metadata", () => {
 
   expect(html).toMatch(/<body class="embed">/);
   expect(html).toMatch(/class="label"/);
-  expect(html).toMatch(/<span>AWS Lambda<\/span>/);
-  expect(html).toMatch(/<span>Web Functions<\/span>/);
+  expect(html).toMatch(/Web Function Demo/);
   expect(html).not.toMatch(/twitter:card/);
   expect(html).not.toMatch(/\.embed \.scene/);
 });

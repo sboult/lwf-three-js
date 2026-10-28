@@ -22,6 +22,9 @@ const publicDirectory =
   (process.env.AWS_LAMBDA_HTTP_ENDPOINT
     ? fileURLToPath(new URL("./public/", import.meta.url))
     : path.resolve("dist/web/public"));
+const staticCacheMaxAge = process.env.PUBLIC_DIRECTORY
+  ? 0
+  : STATIC_CACHE_MAX_AGE;
 
 app.disable("x-powered-by");
 app.set("trust proxy", true);
@@ -30,7 +33,7 @@ app.use(
   express.static(publicDirectory, {
     fallthrough: true,
     index: false,
-    maxAge: STATIC_CACHE_MAX_AGE,
+    maxAge: staticCacheMaxAge,
   }),
 );
 

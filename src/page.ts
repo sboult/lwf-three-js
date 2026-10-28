@@ -45,7 +45,10 @@ export function renderPage({
     <meta property="og:title" content="${APP_TITLE}">
     <meta property="og:description" content="${APP_DESCRIPTION}">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="${escapeAttribute(imageUrl)}">`
+    <meta property="og:image" content="${escapeAttribute(imageUrl)}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="${APP_DESCRIPTION}">`
       : "";
 
   const bodyClass = embed ? "embed" : "share";

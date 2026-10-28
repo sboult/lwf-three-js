@@ -25,8 +25,13 @@ test("renders an accessible Three.js Lambda coaster page", () => {
     /name="twitter:player" content="https:\/\/lambda\.example\.com\/embed"/,
   );
   expect(html).toMatch(
-    /name="twitter:image" content="https:\/\/lambda\.example\.com\/preview\.png"/,
+    /name="twitter:image" content="https:\/\/lambda\.example\.com\/og\.png"/,
   );
+  expect(html).toMatch(
+    /property="og:image" content="https:\/\/lambda\.example\.com\/og\.png"/,
+  );
+  expect(html).toMatch(/property="og:image:width" content="1200"/);
+  expect(html).toMatch(/property="og:image:height" content="630"/);
   expect(html).toMatch(/name="twitter:player:width" content="480"/);
   expect(html).toMatch(/name="twitter:player:height" content="480"/);
 });

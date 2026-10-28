@@ -32,5 +32,5 @@ await mkdir("dist/web/public", { recursive: true });
 await writeFile("dist/web/package.json", '{"type":"module"}\n');
 await Promise.all([
   copyFile("src/assets/texture.png", "dist/web/public/texture.png"),
-  copyFile("src/assets/texture.png", "dist/web/public/preview.png"),
+  copyFile("src/assets/og.png", "dist/web/public/og.png"),
 ]);

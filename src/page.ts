@@ -85,12 +85,6 @@ export function renderPage({
         aspect-ratio: 1;
       }
 
-      .embed .scene {
-        width: 100vw;
-        height: 100vh;
-        aspect-ratio: auto;
-      }
-
       #lambda-canvas {
         display: block;
         width: 100%;

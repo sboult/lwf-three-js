@@ -32,4 +32,5 @@ test("renders an embed with the heading and without share metadata", () => {
   expect(html).toMatch(/<span>AWS Lambda<\/span>/);
   expect(html).toMatch(/<span>Web Functions<\/span>/);
   expect(html).not.toMatch(/twitter:card/);
+  expect(html).not.toMatch(/\.embed \.scene/);
 });

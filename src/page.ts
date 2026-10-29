@@ -31,7 +31,7 @@ export function renderPage({
   const playerUrl = origin ? `${origin}${EMBED_PATH}` : undefined;
   const imageUrl = origin ? `${origin}${PREVIEW_IMAGE_PATH}` : undefined;
 
-  const cardMetadata =
+  const playerMetadata =
     !embed && playerUrl && imageUrl
       ? `
     <meta name="twitter:card" content="player">
@@ -41,7 +41,11 @@ export function renderPage({
     <meta name="twitter:player" content="${escapeAttribute(playerUrl)}">
     <meta name="twitter:player:width" content="480">
     <meta name="twitter:player:height" content="480">
-    <meta name="twitter:image" content="${escapeAttribute(imageUrl)}">
+    <meta name="twitter:image" content="${escapeAttribute(imageUrl)}">`
+      : "";
+
+  const openGraphMetadata = imageUrl
+    ? `
     <meta property="og:title" content="${APP_TITLE}">
     <meta property="og:description" content="${APP_DESCRIPTION}">
     <meta property="og:type" content="website">
@@ -49,7 +53,7 @@ export function renderPage({
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="${APP_DESCRIPTION}">`
-      : "";
+    : "";
 
   const bodyClass = embed ? "embed" : "share";
   const heading = `
@@ -65,7 +69,7 @@ export function renderPage({
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="${APP_DESCRIPTION}">
-    <title>${APP_TITLE}</title>${cardMetadata}
+    <title>${APP_TITLE}</title>${playerMetadata}${openGraphMetadata}
     <style>
       :root {
         color-scheme: dark;

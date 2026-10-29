@@ -72,14 +72,16 @@ app.get("/", (request, response) => {
     );
 });
 
-app.get(EMBED_PATH, (_request, response) => {
+app.get(EMBED_PATH, (request, response) => {
+  const origin = requestOrigin(request);
+
   commonHeaders(response)
     .set({
       "cache-control": PAGE_CACHE_CONTROL,
       "content-security-policy": `${BASE_CONTENT_SECURITY_POLICY}; frame-ancestors https://x.com https://twitter.com https://*.x.com https://*.twitter.com`,
     })
     .type("html")
-    .send(renderPage({ embed: true }));
+    .send(renderPage({ embed: true, origin }));
 });
 
 app.use((_request, response) => {

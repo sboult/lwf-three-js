@@ -36,12 +36,20 @@ test("renders an accessible Three.js Lambda coaster page", () => {
   expect(html).toMatch(/name="twitter:player:height" content="480"/);
 });
 
-test("renders an embed with the heading and without share metadata", () => {
-  const html = renderPage({ embed: true });
+test("renders an embed with the heading and Open Graph image metadata", () => {
+  const html = renderPage({
+    embed: true,
+    origin: "https://lambda.example.com",
+  });
 
   expect(html).toMatch(/<body class="embed">/);
   expect(html).toMatch(/class="label"/);
   expect(html).toMatch(/Web Function Demo/);
   expect(html).not.toMatch(/twitter:card/);
+  expect(html).toMatch(
+    /property="og:image" content="https:\/\/lambda\.example\.com\/og\.png"/,
+  );
+  expect(html).toMatch(/property="og:image:width" content="1200"/);
+  expect(html).toMatch(/property="og:image:height" content="630"/);
   expect(html).not.toMatch(/\.embed \.scene/);
 });

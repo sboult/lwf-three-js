@@ -45,7 +45,13 @@ test("renders an embed with the heading and Open Graph image metadata", () => {
   expect(html).toMatch(/<body class="embed">/);
   expect(html).toMatch(/class="label"/);
   expect(html).toMatch(/Web Function Demo/);
-  expect(html).not.toMatch(/twitter:card/);
+  expect(html).toMatch(/name="twitter:card" content="player"/);
+  expect(html).toMatch(
+    /name="twitter:player" content="https:\/\/lambda\.example\.com\/embed"/,
+  );
+  expect(html).toMatch(
+    /name="twitter:image" content="https:\/\/lambda\.example\.com\/og\.png"/,
+  );
   expect(html).toMatch(
     /property="og:image" content="https:\/\/lambda\.example\.com\/og\.png"/,
   );

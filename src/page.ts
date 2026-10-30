@@ -32,7 +32,7 @@ export function renderPage({
   const imageUrl = origin ? `${origin}${PREVIEW_IMAGE_PATH}` : undefined;
 
   const playerMetadata =
-    !embed && playerUrl && imageUrl
+    playerUrl && imageUrl
       ? `
     <meta name="twitter:card" content="player">
     <meta name="twitter:site" content="${escapeAttribute(twitterSite)}">
